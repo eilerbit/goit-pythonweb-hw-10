@@ -7,6 +7,11 @@ class Settings(BaseSettings):
     POSTGRES_USER: str = "postgres"
     POSTGRES_PASSWORD: str = "postgres"
 
+    # JWT settings
+    JWT_SECRET: str = "current_jwt_secret"
+    JWT_ALGORITHM: str = "HS256"
+    JWT_EXPIRATION_SECONDS: int = 3600
+
     @property
     def database_url(self) -> str:
         return (

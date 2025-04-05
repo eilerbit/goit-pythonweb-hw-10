@@ -1,27 +1,27 @@
 ﻿from sqlalchemy import select, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 from datetime import date, timedelta
-from src.database.models import Contact
+from src.database.models import Contact, User
 from src.schemas import ContactCreate, ContactUpdate
 
 class ContactRepository:
     def __init__(self, session: AsyncSession):
         self.db = session
 
-    async def create_contact(self, contact_data: ContactCreate) -> Contact:
-        new_contact = Contact(**contact_data.dict())
+    async def create_contact(self, contact_data: ContactCreate, user: User) -> Contact:
+        new_contact = Contact(**contact_data.dict(), user_id=user.id)
         self.db.add(new_contact)
         await self.db.commit()
         await self.db.refresh(new_contact)
         return new_contact
 
-    async def get_contacts(self) -> list[Contact]:
-        stmt = select(Contact)
+    async def get_contacts(self, user: User) -> list[Contact]:
+        stmt = select(Contact).where(Contact.user_id == user.id)
         result = await self.db.execute(stmt)
         return result.scalars().all()
 
-    async def get_contact_by_id(self, contact_id: int) -> Contact | None:
-        stmt = select(Contact).where(Contact.id == contact_id)
+    async def get_contact_by_id(self, contact_id: int, user: User) -> Contact | None:
+        stmt = select(Contact).where(Contact.id == contact_id, Contact.user_id == user.id)
         result = await self.db.execute(stmt)
         return result.scalars().first()
 
@@ -37,8 +37,8 @@ class ContactRepository:
         await self.db.delete(contact)
         await self.db.commit()
 
-    async def search_contacts(self, query_str: str) -> list[Contact]:
-        stmt = select(Contact).where(
+    async def search_contacts(self, query_str: str, user: User) -> list[Contact]:
+        stmt = select(Contact).where(Contact.user_id == user.id,
             or_(
                 Contact.first_name.ilike(f"%{query_str}%"),
                 Contact.last_name.ilike(f"%{query_str}%"),
@@ -48,9 +48,9 @@ class ContactRepository:
         result = await self.db.execute(stmt)
         return result.scalars().all()
 
-    async def get_upcoming_birthdays(self) -> list[Contact]:
+    async def get_upcoming_birthdays(self, user: User) -> list[Contact]:
         today = date.today()
         end_date = today + timedelta(days=7)
-        stmt = select(Contact).where(Contact.birthday.between(today, end_date))
+        stmt = select(Contact).where(Contact.user_id == user.id, Contact.birthday.between(today, end_date))
         result = await self.db.execute(stmt)
         return result.scalars().all()
