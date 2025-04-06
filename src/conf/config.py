@@ -26,6 +26,11 @@ class Settings(BaseSettings):
     USE_CREDENTIALS: bool = True
     VALIDATE_CERTS: bool = True
 
+    # Cloudinary settings
+    CLD_NAME: str = "dzglb1qlb"
+    CLD_API_KEY: int = 277562143483385
+    CLD_API_SECRET: str = "IedHZraTe0LtJG5ZTSjnb4aNeAw"
+
     @property
     def database_url(self) -> str:
         return (
