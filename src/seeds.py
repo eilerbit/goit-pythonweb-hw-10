@@ -22,6 +22,7 @@ async def seed_contacts():
                 username=DEFAULT_USERNAME,
                 email=DEFAULT_EMAIL,
                 hashed_password=hashed_pw,
+                confirmed=True
             )
             session.add(user)
             await session.commit()

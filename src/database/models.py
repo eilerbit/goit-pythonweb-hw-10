@@ -1,5 +1,5 @@
 ﻿from sqlalchemy.orm import declarative_base, relationship
-from sqlalchemy import Column, Integer, String, Date, DateTime, ForeignKey, func
+from sqlalchemy import Column, Integer, String, Boolean, Date, DateTime, ForeignKey, func
 
 Base = declarative_base()
 
@@ -24,3 +24,4 @@ class User(Base):
     hashed_password = Column(String)
     created_at = Column(DateTime, default=func.now())
     avatar = Column(String(255), nullable=True)
+    confirmed = Column(Boolean, default=False)

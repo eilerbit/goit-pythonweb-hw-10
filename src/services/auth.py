@@ -33,6 +33,24 @@ async def create_access_token(data: dict, expires_delta: Optional[int] = None) -
     encoded_jwt = jwt.encode(to_encode, config.JWT_SECRET, algorithm=config.JWT_ALGORITHM)
     return encoded_jwt
 
+def create_email_token(data: dict):
+    to_encode = data.copy()
+    expire = datetime.now(timezone.utc) + timedelta(days=7)
+    to_encode.update({"iat": datetime.now(timezone.utc), "exp": expire})
+    token = jwt.encode(to_encode, config.JWT_SECRET, algorithm=config.JWT_ALGORITHM)
+    return token
+
+async def get_email_from_token(token: str) -> str:
+    try:
+        payload = jwt.decode(token, config.JWT_SECRET, algorithms=[config.JWT_ALGORITHM])
+        email: str = payload["sub"]
+        return email
+    except JWTError:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Invalid token for email verification",
+        )
+
 async def get_current_user(
     token: str = Depends(oauth2_scheme),
     db: AsyncSession = Depends(get_db),

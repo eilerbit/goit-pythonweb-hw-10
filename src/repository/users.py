@@ -27,10 +27,17 @@ class UserRepository:
         user = User(
             username=body.username,
             email=body.email,
-            hashed_password=body.password,  # Увага: це поки «голий» пароль. Згори ми ще зробимо хешування
-            avatar=avatar
+            hashed_password=body.password,
+            avatar=avatar,
+            confirmed=False
         )
         self.db.add(user)
         await self.db.commit()
         await self.db.refresh(user)
         return user
+
+    async def confirmed_email(self, email: str) -> None:
+        user = await self.get_user_by_email(email)
+        if user:
+            user.confirmed = True
+            await self.db.commit()
