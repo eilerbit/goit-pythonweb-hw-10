@@ -1,4 +1,5 @@
 ﻿from fastapi import FastAPI, Request, status
+from fastapi.middleware.cors import CORSMiddleware
 from src.api import auth, contacts, users
 from starlette.responses import JSONResponse
 from slowapi.errors import RateLimitExceeded
@@ -7,6 +8,19 @@ app = FastAPI(
     title="Contacts API",
     version="1.0.0",
     description="REST API для керування контактами"
+)
+
+# Configure CORS
+origins = [
+    "http://localhost"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"]
 )
 
 @app.exception_handler(RateLimitExceeded)
