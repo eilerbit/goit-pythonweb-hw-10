@@ -10,16 +10,16 @@ class Settings(BaseSettings):
     POSTGRES_PASSWORD: str = "postgres"
 
     # JWT settings
-    JWT_SECRET: str = "current_jwt_secret"
+    JWT_SECRET: str = "changeme"
     JWT_ALGORITHM: str = "HS256"
     JWT_EXPIRATION_SECONDS: int = 3600
 
     # Email settings for FastAPI-Mail
-    MAIL_USERNAME: EmailStr = "contactApp@meta.ua"
-    MAIL_PASSWORD: str = "ContactApp0"
-    MAIL_FROM: EmailStr = "contactApp@meta.ua"
+    MAIL_USERNAME: EmailStr = "your_email@example.com"
+    MAIL_PASSWORD: str = "changeme"
+    MAIL_FROM: EmailStr = "your_email@example.com"
     MAIL_PORT: int = 465
-    MAIL_SERVER: str = "smtp.meta.ua"
+    MAIL_SERVER: str = "smtp.example.com"
     MAIL_FROM_NAME: str = "Rest API Service"
     MAIL_STARTTLS: bool = False
     MAIL_SSL_TLS: bool = True
@@ -27,9 +27,9 @@ class Settings(BaseSettings):
     VALIDATE_CERTS: bool = True
 
     # Cloudinary settings
-    CLD_NAME: str = "dzglb1qlb"
-    CLD_API_KEY: int = 277562143483385
-    CLD_API_SECRET: str = "IedHZraTe0LtJG5ZTSjnb4aNeAw"
+    CLD_NAME: str = "your_cloud_name"
+    CLD_API_KEY: int = 0
+    CLD_API_SECRET: str = "changeme"
 
     @property
     def database_url(self) -> str:
